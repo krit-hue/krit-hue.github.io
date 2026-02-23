@@ -78,20 +78,25 @@ document.addEventListener('DOMContentLoaded', () => {
         messagesEl.scrollTop = messagesEl.scrollHeight;
 
         try {
-            const response = await fetch(webhookUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    message: text
-                })
+            // Build a GET request URL by appending the user question as a query parameter.
+            // Some Make.com webhooks only accept GET requests and ignore POST bodies.
+            const url = `${webhookUrl}?question=${encodeURIComponent(text)}`;
+            const response = await fetch(url, {
+                method: 'GET'
             });
             let replyText;
             if (response.ok) {
-                // Expect JSON reply with a 'reply' field or similar
-                const data = await response.json();
-                replyText = data.reply || JSON.stringify(data);
+                try {
+                    // Attempt to parse JSON. Many scenarios return an object with
+                    // a `reply` or similar property. Fallback to stringifying the
+                    // data if no specific property is found.
+                    const data = await response.json();
+                    replyText = data.reply || data.answer || data.response || JSON.stringify(data);
+                } catch (jsonErr) {
+                    // If the response isn't valid JSON, fall back to plain text.
+                    const textResponse = await response.text();
+                    replyText = textResponse;
+                }
             } else {
                 replyText = 'Sorry, I couldn\'t reach my assistant. Please try again later.';
             }
