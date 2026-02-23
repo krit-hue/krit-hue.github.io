@@ -99,7 +99,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 // visitors still get a meaningful answer if the scenario doesn’t immediately
                 // produce a JSON reply.
                 const normalized = (replyText || '').trim().toLowerCase();
-                if (!normalized || normalized === 'accepted') {
+                // Some Make.com webhooks simply return a bare "Accepted" response or other
+                // acknowledgements that don't include useful information. If the response
+                // is empty or appears to be just an acknowledgement (e.g. starts with
+                // "accepted"), fall back to serving the resume instead.
+                if (!normalized || normalized.startsWith('accepted')) {
                     try {
                         const resumeResp = await fetch('resume.md');
                         replyText = await resumeResp.text();
