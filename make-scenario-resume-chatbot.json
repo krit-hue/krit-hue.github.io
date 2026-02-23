@@ -1,0 +1,77 @@
+{
+  "name": "Kritesh Resume Chatbot",
+  "flow": [
+    {
+      "id": 1,
+      "module": "builtin:basic-webhook",
+      "version": 1,
+      "mapper": {
+        "qs": [
+          {
+            "name": "question",
+            "type": "text",
+            "label": "Question",
+            "required": false
+          }
+        ]
+      },
+      "metadata": {
+        "designer": {
+          "x": 100,
+          "y": 100
+        }
+      }
+    },
+    {
+      "id": 2,
+      "module": "openai:openai-gpt-create-a-chat-completion",
+      "version": 1,
+      "mapper": {
+        "model": "gpt-4o-mini",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are Kritesh Shiwakoti's personal assistant. Answer questions about Kritesh based ONLY on the resume context provided. Be concise and professional. If the answer is not in the resume, say you don't have that information. IMPORTANT: Paste the full content from kritesh-resume-context.txt here after importing."
+          },
+          {
+            "role": "user",
+            "content": "{{1.question}}"
+          }
+        ]
+      },
+      "metadata": {
+        "designer": {
+          "x": 400,
+          "y": 100
+        }
+      }
+    },
+    {
+      "id": 3,
+      "module": "builtin:respond-to-webhook",
+      "version": 1,
+      "mapper": {
+        "status": 200,
+        "bodyType": "raw",
+        "body": "{\"reply\": \"{{2.choices.0.message.content}}\"}"
+      },
+      "metadata": {
+        "designer": {
+          "x": 700,
+          "y": 100
+        }
+      }
+    }
+  ],
+  "scheduling": {
+    "type": "immediately"
+  },
+  "metadata": {
+    "version": 1,
+    "scenario": {
+      "maxErrors": 3,
+      "autoCommit": true,
+      "roundtrips": 1
+    }
+  }
+}

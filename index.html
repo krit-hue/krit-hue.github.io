@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Name – Personal Assistant</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-8NSBbbBep2D45PptS3AUHN9FeNF1doLU0YYiZoY9DhFv+1E8fDyTLC0eqV9U+PXISGEc8lciHhDNXdwIth8rUA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Site Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="hero">
+        <div class="hero-content">
+            <h1>👋 Hello! I'm Your Name</h1>
+            <p>Welcome to my personal site and assistant chatbot. Feel free to explore my resume and ask me anything.</p>
+        </div>
+    </header>
+
+    <main>
+        <!-- About Section -->
+        <section id="about">
+            <h2>About Me</h2>
+            <p>This section is a brief introduction about who I am, my passions, and what drives me. Replace this text with your personal story. You might mention your background, interests, or goals. Use descriptive language and maybe even some emojis to express yourself 😊.</p>
+        </section>
+
+        <!-- Resume Section -->
+        <section id="resume">
+            <h2>Resume</h2>
+            <p>Interested in learning more about my professional experience and skills? Check out my <a href="resume.md" target="_blank" rel="noopener">resume</a>.</p>
+        </section>
+
+        <!-- Chat Section -->
+        <section id="chat">
+            <h2>Ask Me Anything</h2>
+            <p class="chat-description">Use the chat below to ask me questions about my experience, projects, or anything else. Your queries will be sent to my Make.com scenario which powers this assistant.</p>
+            <div id="chat-container">
+                <div id="messages" aria-live="polite"></div>
+                <div class="input-area">
+                    <input id="user-input" type="text" placeholder="Type your question…" autocomplete="off" />
+                    <button id="send-btn" aria-label="Send message"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Site Script -->
+    <script src="script.js"></script>
+</body>
+</html>
