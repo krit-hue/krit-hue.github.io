@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(url, {
                 method: 'GET'
             });
-            let replyText;
+            let replyText = '';
             if (response.ok) {
                 // Read the response body as text once. We'll attempt to parse it as JSON.
                 const textResponse = await response.text();
@@ -92,34 +92,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     const data = JSON.parse(textResponse);
                     replyText = data.reply || data.answer || data.response || JSON.stringify(data);
                 } catch (parseErr) {
+                    // If the response isn't JSON, use the raw text
                     replyText = textResponse;
                 }
-                // If the Make.com webhook responds with a generic or empty acknowledgement
-                // (like "Accepted"), fall back to the local resume content. This ensures
-                // visitors still get a meaningful answer if the scenario doesn’t immediately
-                // produce a JSON reply.
+                // Normalize the reply to detect empty or acknowledgement responses
                 const normalized = (replyText || '').trim().toLowerCase();
-                // Some Make.com webhooks simply return a bare "Accepted" response or other
-                // acknowledgements that don't include useful information. If the response
-                // is empty or appears to be just an acknowledgement (e.g. starts with
-                // "accepted"), fall back to serving the resume instead.
+                // If there's no meaningful reply or it's just an acknowledgement (e.g. "Accepted"),
+                // provide a friendly message instead of reading from the resume.
                 if (!normalized || normalized.startsWith('accepted')) {
-                    try {
-                        const resumeResp = await fetch('resume.md');
-                        replyText = await resumeResp.text();
-                    } catch (resumeErr) {
-                        replyText = 'Sorry, I couldn\'t fetch my resume information.';
-                    }
+                    replyText = 'Sorry, I couldn\'t get an answer from my assistant right now. Please try again later.';
                 }
             } else {
-                // On HTTP errors, attempt to serve the resume as a fallback.
-                try {
-                    const resumeResp = await fetch('resume.md');
-                    replyText = await resumeResp.text();
-                } catch (resumeErr) {
-                    replyText = 'Sorry, I couldn\'t reach my assistant. Please try again later.';
-                }
+                // Non-OK HTTP responses get a generic error message
+                replyText = 'Sorry, there was an error contacting my assistant. Please try again later.';
             }
+
             // Remove loading indicator and append the reply
             loadingWrapper.remove();
             appendMessage(replyText, 'assistant');
