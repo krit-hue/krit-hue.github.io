@@ -3,7 +3,7 @@
   "flow": [
     {
       "id": 1,
-      "module": "builtin:basic-webhook",
+      "module": "builtin:BasicWebhook",
       "version": 1,
       "mapper": {
         "qs": [
@@ -24,14 +24,14 @@
     },
     {
       "id": 2,
-      "module": "openai:openai-gpt-create-a-chat-completion",
+      "module": "openai:CreateChatCompletion",
       "version": 1,
       "mapper": {
         "model": "gpt-4o-mini",
         "messages": [
           {
             "role": "system",
-            "content": "You are Kritesh Shiwakoti's personal assistant. Answer questions about Kritesh based ONLY on the resume context provided. Be concise and professional. If the answer is not in the resume, say you don't have that information. IMPORTANT: Paste the full content from kritesh-resume-context.txt here after importing."
+            "content": "You are Kritesh Shiwakoti's personal assistant. Answer questions about Kritesh based ONLY on the resume below. Be concise and professional. If the answer is not in the resume, say you don't have that information.\n\nRESUME:\nKritesh Shiwakoti | Phone: (256) 585 8806 | Email: kriteshshiwakoti@gmail.com\nMaster of Science in Information System | Certified Jenkins Engineer | Certified SAFe 5 Practitioner | Certified Microsoft Azure AZ-900\n\nEXPERIENCE:\n- CVS Health, Woonsocket RI (Oct 2015-Present): Advisor, Configuration Management Engineer. SVN, Jenkins, Quickbuild, Ant, Maven, CI/CD, Tomcat, Jboss, Weblogic, Docker, Nexus, Artifactory.\n- Cameron University, Lawton OK (Aug 2013-May 2015): IT projects, database development, Jenkins, Git, CI/CD.\n- Javra Software Nepal (Feb 2008-July 2010): Computer Analyst. SVN, Maven, JIRA, MySQL, Linux.\n\nSKILLS: Java, C++, Perl, Shell, Ant, Maven, Jenkins, SVN, GitHub, TFS, Nexus, Artifactory, Docker, Tomcat, Jboss, Weblogic, Linux, SQL, Oracle, Azure, Pivotal Cloud Foundry.\n\nEDUCATION: Master of Science in Information System, BS in Information Technology, Associate of Science in IT.\n\nCERTIFICATIONS: Microsoft Azure AZ-900, Jenkins Engineer, SAFe 5 Practitioner, Cyber Security."
           },
           {
             "role": "user",
@@ -48,7 +48,7 @@
     },
     {
       "id": 3,
-      "module": "builtin:respond-to-webhook",
+      "module": "builtin:RespondToWebhook",
       "version": 1,
       "mapper": {
         "status": 200,

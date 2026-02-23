@@ -98,19 +98,20 @@ If you created a **new** webhook (new scenario):
 
 ---
 
-## Option B: Import Blueprint (If Available)
+## Option B: Import Blueprint
 
-If `make-scenario-resume-chatbot.json` imports successfully:
+Try importing one of the blueprint JSON files:
 
 1. In Make.com: **Create a new scenario** → **⋯** (three dots) → **Import blueprint**
-2. Select `make-scenario-resume-chatbot.json`
-3. Configure:
-   - **OpenAI**: Connect your account and add your API key
-   - **System message**: Paste the content of `kritesh-resume-context.txt`
-   - **Webhook**: Ensure the `question` parameter is mapped
-4. Save, turn ON, and test as in Option A
+2. Select `make-scenario-resume-chatbot.json` or `make-scenario-resume-chatbot-v2.json`
+3. If import succeeds:
+   - **OpenAI module**: Connect your OpenAI account (add API key)
+   - **Webhook**: Ensure the `question` parameter is in the data structure
+   - **Respond to webhook**: Verify the body uses `{{2.choices.0.message.content}}` or `{{2.message.content}}` (check the output mapping in the OpenAI module)
+4. **Update script.js**: Replace `webhookUrl` with the new webhook URL from the imported scenario
+5. Save, turn ON, and test
 
-**Note:** Make.com blueprint format is proprietary and changes over time. If import fails or the scenario has errors, use **Option A** (manual build) – it takes about 5 minutes and is more reliable.
+**If import fails:** Make.com's blueprint format can vary. Use **Option A** (manual build) – it takes about 5 minutes and always works.
 
 ---
 
