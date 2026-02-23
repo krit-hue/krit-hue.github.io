@@ -3,24 +3,51 @@
 // responses in the chat interface.
 
 document.addEventListener('DOMContentLoaded', () => {
-    // TODO: Replace this with your actual Make.com webhook URL
-    const webhookUrl = 'YOUR_MAKE_WEBHOOK_URL';
+    // URL of your Make.com webhook. Messages will be sent here and the
+    // response returned will be displayed in the chat. Update this if you
+    // change your scenario or create a new webhook in Make.com.
+    const webhookUrl = 'https://hook.us2.make.com/vtghxv8gwlwrhsffl8yl9uh1vpv9k6mb';
 
     const messagesEl = document.getElementById('messages');
     const userInputEl = document.getElementById('user-input');
     const sendBtn = document.getElementById('send-btn');
 
     /**
-     * Appends a message element to the messages container.
+     * Creates and appends a chat message to the messages container. Each
+     * message is wrapped with an avatar so that visitors can clearly see
+     * which side (user vs assistant) the message comes from. The wrapper
+     * ensures the avatar sits alongside the bubble and aligns the
+     * conversation appropriately.
      *
      * @param {string} text - The message text
-     * @param {string} type - Either 'user' or 'bot' to style the message
+     * @param {string} type - Either 'user' or 'assistant' to style the message
      */
     function appendMessage(text, type) {
+        const wrapperEl = document.createElement('div');
+        wrapperEl.classList.add('message-wrapper', type);
+
+        // Avatar image. Pick the appropriate graphic based on sender.
+        const avatarEl = document.createElement('img');
+        avatarEl.classList.add('avatar');
+        avatarEl.src = type === 'user' ? 'user-avatar.png' : 'assistant-avatar.png';
+        avatarEl.alt = type === 'user' ? 'You' : 'Assistant';
+
+        // Actual message bubble
         const msgEl = document.createElement('div');
         msgEl.classList.add('message', type);
         msgEl.textContent = text;
-        messagesEl.appendChild(msgEl);
+
+        // For user messages we append in reverse order so the avatar stays
+        // on the correct side when flex-direction is reversed.
+        if (type === 'user') {
+            wrapperEl.appendChild(msgEl);
+            wrapperEl.appendChild(avatarEl);
+        } else {
+            wrapperEl.appendChild(avatarEl);
+            wrapperEl.appendChild(msgEl);
+        }
+
+        messagesEl.appendChild(wrapperEl);
         // Scroll to the bottom of the chat
         messagesEl.scrollTop = messagesEl.scrollHeight;
     }
@@ -35,11 +62,19 @@ document.addEventListener('DOMContentLoaded', () => {
         appendMessage(text, 'user');
         userInputEl.value = '';
 
-        // Show a temporary loading indicator for the bot
-        const loadingEl = document.createElement('div');
-        loadingEl.classList.add('message', 'bot');
-        loadingEl.textContent = '…';
-        messagesEl.appendChild(loadingEl);
+        // Show a temporary loading indicator for the assistant
+        const loadingWrapper = document.createElement('div');
+        loadingWrapper.classList.add('message-wrapper', 'assistant');
+        const loadingAvatar = document.createElement('img');
+        loadingAvatar.classList.add('avatar');
+        loadingAvatar.src = 'assistant-avatar.png';
+        loadingAvatar.alt = 'Assistant';
+        const loadingBubble = document.createElement('div');
+        loadingBubble.classList.add('message', 'assistant');
+        loadingBubble.textContent = '…';
+        loadingWrapper.appendChild(loadingAvatar);
+        loadingWrapper.appendChild(loadingBubble);
+        messagesEl.appendChild(loadingWrapper);
         messagesEl.scrollTop = messagesEl.scrollHeight;
 
         try {
@@ -61,11 +96,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 replyText = 'Sorry, I couldn\'t reach my assistant. Please try again later.';
             }
             // Remove loading indicator and append the reply
-            loadingEl.remove();
-            appendMessage(replyText, 'bot');
+            loadingWrapper.remove();
+            appendMessage(replyText, 'assistant');
         } catch (err) {
-            loadingEl.remove();
-            appendMessage('Error: ' + err.message, 'bot');
+            loadingWrapper.remove();
+            appendMessage('Error: ' + err.message, 'assistant');
         }
     }
 

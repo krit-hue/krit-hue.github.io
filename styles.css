@@ -57,6 +57,13 @@ section p {
     margin-bottom: 0.5rem;
 }
 
+# Chat styles
+/*
+ * Each chat message is wrapped with a `.message-wrapper` that contains an
+ * avatar image and the bubble itself. We use flexbox to align the
+ * avatar and text properly for both user (right aligned) and assistant
+ * (left aligned) messages.
+ */
 /* Chat container */
 #chat-container {
     display: flex;
@@ -67,6 +74,46 @@ section p {
     background-color: #fafafa;
 }
 
+/* Wrapper that holds the avatar and the bubble */
+.message-wrapper {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+/* Align user messages to the right. The row direction is reversed so the
+ * avatar appears on the right of the bubble. */
+.message-wrapper.user {
+    justify-content: flex-end;
+    flex-direction: row-reverse;
+}
+
+/* Align assistant messages to the left */
+.message-wrapper.assistant {
+    justify-content: flex-start;
+    flex-direction: row;
+}
+
+/* Avatar images */
+.avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin: 0 0.5rem;
+    object-fit: cover;
+    flex-shrink: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Message bubbles */
+.message {
+    max-width: 75%;
+    padding: 0.6rem 0.8rem;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    word-wrap: break-word;
+}
+
 #messages {
     flex: 1;
     padding: 1rem;
@@ -75,22 +122,17 @@ section p {
     flex-direction: column;
 }
 
-.message {
-    max-width: 75%;
-    padding: 0.6rem 0.8rem;
-    border-radius: 12px;
-    margin-bottom: 0.5rem;
-    font-size: 0.95rem;
-    word-wrap: break-word;
-}
-
+/* Override bubble alignments for user and assistant. These rules
+ * inherit base styling from .message but adjust alignment and
+ * colours for each role.
+ */
 .message.user {
     align-self: flex-end;
     background-color: #e0e7ff;
     color: #3b3b60;
 }
 
-.message.bot {
+.message.assistant {
     align-self: flex-start;
     background-color: #f2f2f2;
     color: #2b2b2b;
