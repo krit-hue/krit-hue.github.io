@@ -119,11 +119,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 // Normalize the reply to detect empty or acknowledgement responses
                 const normalized = (replyText ?? '').toString().trim().toLowerCase();
-                // Detect Make.com config issue: AI asks for "incoming question" because it never received it
-                const isConfigError = normalized.includes('please provide') && normalized.includes('incoming question');
-                if (isConfigError) {
-                    replyText = 'The chatbot is not configured correctly. The question was not passed to the AI. See MAKECOM_SETUP.md in the repository for fix instructions.';
-                } else if (!normalized || normalized.startsWith('accepted')) {
+                // If there's no meaningful reply or it's just an acknowledgement (e.g. "accepted"),
+                // provide a friendly message instead.
+                if (!normalized || normalized.startsWith('accepted')) {
                     replyText = 'Sorry, I couldn\'t get an answer from my assistant right now. Please try again later.';
                 }
             } else {
