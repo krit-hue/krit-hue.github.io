@@ -89,16 +89,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Read the response body as text once. We'll attempt to parse it as JSON.
                 const textResponse = await response.text();
                 try {
-                    const data = JSON.parse(textResponse);
-                    replyText = data.reply || data.answer || data.response || JSON.stringify(data);
+                    const parsedData = JSON.parse(textResponse);
+                    // If the parsed data is an object (not an array or primitive),
+                    // try to extract a reply or similar field. Otherwise use the value directly.
+                    if (parsedData && typeof parsedData === 'object' && !Array.isArray(parsedData)) {
+                        if (Object.prototype.hasOwnProperty.call(parsedData, 'reply')) {
+                            replyText = parsedData.reply;
+                        } else if (Object.prototype.hasOwnProperty.call(parsedData, 'answer')) {
+                            replyText = parsedData.answer;
+                        } else if (Object.prototype.hasOwnProperty.call(parsedData, 'response')) {
+                            replyText = parsedData.response;
+                        } else {
+                            // If there is exactly one property in the object, use its value as the reply.
+                            const keys = Object.keys(parsedData);
+                            if (keys.length === 1) {
+                                replyText = parsedData[keys[0]];
+                            } else {
+                                // Unknown structure; fall back to stringifying it.
+                                replyText = JSON.stringify(parsedData);
+                            }
+                        }
+                    } else {
+                        // For primitive JSON (string/number), just use it as reply.
+                        replyText = parsedData;
+                    }
                 } catch (parseErr) {
-                    // If the response isn't JSON, use the raw text
+                    // If the response isn't valid JSON, use the raw text
                     replyText = textResponse;
                 }
                 // Normalize the reply to detect empty or acknowledgement responses
-                const normalized = (replyText || '').trim().toLowerCase();
-                // If there's no meaningful reply or it's just an acknowledgement (e.g. "Accepted"),
-                // provide a friendly message instead of reading from the resume.
+                const normalized = (replyText ?? '').toString().trim().toLowerCase();
+                // If there's no meaningful reply or it's just an acknowledgement (e.g. "accepted"),
+                // provide a friendly message instead.
                 if (!normalized || normalized.startsWith('accepted')) {
                     replyText = 'Sorry, I couldn\'t get an answer from my assistant right now. Please try again later.';
                 }
