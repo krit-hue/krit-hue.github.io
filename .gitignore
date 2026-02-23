@@ -1,0 +1,6 @@
+# Secrets - never commit API keys or credentials
+openai-config.json
+config.json
+.env
+.env.local
+*.local.json
