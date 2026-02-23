@@ -86,15 +86,14 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             let replyText;
             if (response.ok) {
+                // Read the response body as text once. We'll attempt to parse it as JSON,
+                // and if parsing fails we'll use the plain text directly. This avoids
+                // reading the body stream multiple times (which would cause an error).
+                const textResponse = await response.text();
                 try {
-                    // Attempt to parse JSON. Many scenarios return an object with
-                    // a `reply` or similar property. Fallback to stringifying the
-                    // data if no specific property is found.
-                    const data = await response.json();
+                    const data = JSON.parse(textResponse);
                     replyText = data.reply || data.answer || data.response || JSON.stringify(data);
-                } catch (jsonErr) {
-                    // If the response isn't valid JSON, fall back to plain text.
-                    const textResponse = await response.text();
+                } catch (parseErr) {
                     replyText = textResponse;
                 }
             } else {
