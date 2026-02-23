@@ -86,9 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             let replyText;
             if (response.ok) {
-                // Read the response body as text once. We'll attempt to parse it as JSON,
-                // and if parsing fails we'll use the plain text directly. This avoids
-                // reading the body stream multiple times (which would cause an error).
+                // Read the response body as text once. We'll attempt to parse it as JSON.
                 const textResponse = await response.text();
                 try {
                     const data = JSON.parse(textResponse);
@@ -96,8 +94,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 } catch (parseErr) {
                     replyText = textResponse;
                 }
+                // If the Make.com webhook responds with a generic or empty acknowledgement
+                // (like "Accepted"), fall back to the local resume content. This ensures
+                // visitors still get a meaningful answer if the scenario doesn’t immediately
+                // produce a JSON reply.
+                const normalized = (replyText || '').trim().toLowerCase();
+                if (!normalized || normalized === 'accepted') {
+                    try {
+                        const resumeResp = await fetch('resume.md');
+                        replyText = await resumeResp.text();
+                    } catch (resumeErr) {
+                        replyText = 'Sorry, I couldn\'t fetch my resume information.';
+                    }
+                }
             } else {
-                replyText = 'Sorry, I couldn\'t reach my assistant. Please try again later.';
+                // On HTTP errors, attempt to serve the resume as a fallback.
+                try {
+                    const resumeResp = await fetch('resume.md');
+                    replyText = await resumeResp.text();
+                } catch (resumeErr) {
+                    replyText = 'Sorry, I couldn\'t reach my assistant. Please try again later.';
+                }
             }
             // Remove loading indicator and append the reply
             loadingWrapper.remove();
