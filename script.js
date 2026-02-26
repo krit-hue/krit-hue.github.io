@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // URL of your Make.com webhook. Messages will be sent here and the
     // response returned will be displayed in the chat. Update this if you
     // change your scenario or create a new webhook in Make.com.
-    const webhookUrl = 'https://hook.us2.make.com/vtghxv8gwlwrhsffl8yl9uh1vpv9k6mb';
+    const webhookUrl = 'https://hook.us2.make.com/koko4f8muna846l37f7rs5b436lw652q';
 
     const messagesEl = document.getElementById('messages');
     const userInputEl = document.getElementById('user-input');
